@@ -76,7 +76,7 @@ class DFA():
 			qi = self.trans[qi][i]
 
 		return qi in self.F 
-
+		#Task 12
 	def get_accept(self):
 		v = set()
 		a = []
