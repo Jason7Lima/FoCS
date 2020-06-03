@@ -155,7 +155,7 @@ class DFA():
 		return DFA(self.alpha, self.Q, self.iniQ, self.trans, self.Q - self.F)
 
 
-	
+	#Task 13
 	def compliment(d):
 		return DFA(d.alpha, d.Q, d.iniQ, d.trans, d.Q - d.F)
 
