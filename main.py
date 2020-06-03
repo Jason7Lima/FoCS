@@ -226,7 +226,7 @@ def dfaTestingDriver(d, tests):
 ##########################################################################################################################################################################################################
 
 
-										#Testing for Intersect task 16
+										#Testing for Intersect for task 17
 
 
 RepetitiveOnes_and_contains_001 = RepetitiveOnes.intersect(contains_001)
