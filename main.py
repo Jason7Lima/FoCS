@@ -126,6 +126,7 @@ class DFA():
 
 		return DFA(self.alpha, states, (self.iniQ, other.iniQ), delta, accepts)
 
+	#Task 14
 	def union(self, other):
 		return self.cross(other, bool.__or__)
 
