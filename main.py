@@ -130,6 +130,8 @@ class DFA():
 	def union(self, other):
 		return self.cross(other, bool.__or__)
 
+
+	#Task 16
 	def intersect(self, other):
 		return self.cross(other, bool.__and__)
 
