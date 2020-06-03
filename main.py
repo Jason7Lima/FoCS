@@ -147,6 +147,8 @@ class DFA():
 	def __contains__(self, other):
 		return self.subset(other)
 
+
+	#Task 20	
 	def __eq__(self, other):
 		'''
 			if both sides are a subset of each other then they are equal
