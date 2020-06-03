@@ -135,6 +135,8 @@ class DFA():
 	def intersect(self, other):
 		return self.cross(other, bool.__and__)
 
+
+	#Task 18
 	def subset(self, other):
 		'''
 			C := B intersect A^c
