@@ -242,7 +242,7 @@ dfaTestingDriver(RepetitiveOnes_and_contains_001, test_cases)
 ##########################################################################################################################################################################################################
 
 
-										#Testing for Union task 15
+										#Testing for Union for task 15
 
 
 RepetitiveOnes_or_contains_001 = RepetitiveOnes.union(contains_001)
