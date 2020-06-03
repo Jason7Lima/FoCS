@@ -97,7 +97,7 @@ class DFA():
 		accept(self.iniQ)
 
 		return String(a[::-1], self.alpha)
-
+		#Task 11
 	def trace(self, s):
 		state = []
 		if self.accepts(s):
