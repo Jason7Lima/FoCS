@@ -142,7 +142,11 @@ class DFA():
 			C := B intersect A^c
 			A is a subset of B iff C does not have any acceptable strings
 		'''
-		return not other.intersect(~self).get_accepted()
+		new = self.intersect(~other)
+		if new.get_accept():
+			return False
+
+		return True	
 
 	def __contains__(self, other):
 		return self.subset(other)
@@ -169,6 +173,20 @@ class DFA():
 
 
 
+
+def equalityDriver(d1, tests):
+	def equalityFailCase(d1, d2, expected):
+		if (d1 == d2) != expected :
+			print(f'Test FAILED!')
+			return False
+		return True
+
+	passed = 0
+	for case in tests:
+		if equalityFailCase(d1, case[0], case[1]):
+			passed += 1
+	print(f'{passed}/{len(tests)} equality tests PASSED!')
+	return passed
 
 
 
@@ -259,3 +277,18 @@ test_cases = [([], False), ('0', False), ('01', False), ('11', True), ('111', Tr
 dfaTestingDriver(RepetitiveOnes_or_contains_001, test_cases)
 
 ##########################################################################################################################################################################################################
+
+
+###############################################
+#Task21######################
+'''
+Union, if we call union on two DFA we should have all elements from one
+dfa and another dfa in one. We test to make sure all elements consist in
+both DFA's
+
+'''
+
+# Test if RepetitiveOnes_or_contains_001 is equal to each test DFA
+test_cases = [(RepetitiveOnes_or_contains_001, True), (only_ones, False), (~RepetitiveOnes_or_contains_001, False), (~~RepetitiveOnes_or_contains_001, True)]
+equalityDriver(RepetitiveOnes_or_contains_001, test_cases)
+
