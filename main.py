@@ -290,6 +290,7 @@ both DFA's
 '''
 
 # Test if RepetitiveOnes_or_contains_001 is equal to each test DFA
+#Just realized that this works for task 22
 test_cases = [(RepetitiveOnes_or_contains_001, True), (only_ones, False), (compliment(RepetitiveOnes_or_contains_001), False), (compliment(compliment(RepetitiveOnes_or_contains_001)), False)]
 equalityDriver(RepetitiveOnes_or_contains_001, test_cases)
 
