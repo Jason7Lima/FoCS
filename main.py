@@ -10,6 +10,13 @@ class Alphabet(list):
 	def is_empty(self):
 		return not len(self)
 
+	def nthString(alp, num):
+		if not num: return String([], alp)
+		layer = int(math.log(num + 1, len(alp))) 
+		index =  num + 1 - len(alp) ** layer 
+		
+		return String(list(product(alp, repeat=layer))[index], alp)
+
 	def __repr__(self):
 		return 'Alphabet {}'.format(', '.join(map(str, self))) 
 
@@ -23,7 +30,8 @@ class String(list):
 		self.al = al
 
 	def empty(self):
-		return not len(self)
+		if self == [Char()]:
+			return	True
 
 	def __repr__(self):
 		return 'String {}'.format(''.join(map(str,self)))
@@ -43,13 +51,60 @@ class Char():
 	def __repr__(self):
 		return self.ch
 
+def cross(self, other, cond):
+		states = set()
+		accepts = set()
+		delta = dict()
 
-def nthString(alp, num):
-	if not num: return String([Char()], alp)
-	layer = int(math.log(num + 1, len(alp))) 
-	index =  num + 1 - len(alp) ** layer 
-	
-	return String(list(product(alp, repeat=layer))[index], alp)
+		for qi1 in self.Q:
+			for qi2 in other.Q:
+				states.add((qi1, qi2))
+				delta[(qi1, qi2)] = dict()
+				for c in self.alpha:
+					delta[(qi1, qi2)][c] = (self.trans[qi1][c], other.trans[qi2][c])
+
+		for (qi1, qi2) in states:
+			if cond(qi1 in self.F, qi2 in other.F):
+				accepts.add((qi1, qi2))
+
+		return DFA(self.alpha, states, (self.iniQ, other.iniQ), delta, accepts)
+
+#Task 14
+def union(d1, d2):
+	return cross(d1,d2, bool.__or__)
+
+
+#Task 16
+def intersect(d1, d2):
+	return cross(d1,d2, bool.__and__)
+
+
+#Task 18
+def subset(self, other):
+	'''
+		C := B intersect A^c
+		A is a subset of B iff C does not have any acceptable strings
+	'''
+	new = self.intersect(~other)
+	if new.get_accept():
+		return False
+
+	return True	
+
+
+#Task 20	
+def equality(d1, d2):
+	'''
+		if both sides are a subset of each other then they are equal
+	'''
+	return subset(d1,d2) and subset(d2,d1)
+
+#Task 13
+def compliment(d):
+	return DFA(d.alpha, d.Q, d.iniQ, d.trans, d.Q - d.F)
+
+
+
 
 class DFA():
 	def __init__(self, alpha, Q, iniQ, trans, F):
@@ -77,6 +132,13 @@ class DFA():
 
 		return qi in self.F 
 		#Task 12
+
+
+
+		'''
+		Fixed get accept to return null if nothing is acceptable
+		also return empty string if my initialq is accepting
+		'''
 	def get_accept(self):
 		v = set()
 		a = []
@@ -88,15 +150,19 @@ class DFA():
 				return False
 			v.add(qi)
 
+
 			for c in self.alpha:
-				if accept(self.trans[qi][c]):
-					a.append(c)
+				get_next = self.trans[qi][c]
+				if accept(get_next):
+					a.insert(0,c)#0 for null
 					return True
 			return False
 
-		accept(self.iniQ)
+		if self.iniQ in self.F:
+			return True # return empty
 
-		return String(a[::-1], self.alpha)
+		accept(self.iniQ)
+		return a
 		#Task 11
 	def trace(self, s):
 		state = []
@@ -107,71 +173,6 @@ class DFA():
 				qi = self.trans[qi][c]
 			return state
 		return False
-
-	def cross(self, other, cond):
-		states = set()
-		accepts = set()
-		delta = dict()
-
-		for qi1 in self.Q:
-			for qi2 in other.Q:
-				states.add((qi1, qi2))
-				delta[(qi1, qi2)] = dict()
-				for c in self.alpha:
-					delta[(qi1, qi2)][c] = (self.trans[qi1][c], other.trans[qi2][c])
-
-		for (qi1, qi2) in states:
-			if cond(qi1 in self.F, qi2 in other.F):
-				accepts.add((qi1, qi2))
-
-		return DFA(self.alpha, states, (self.iniQ, other.iniQ), delta, accepts)
-
-	#Task 14
-	def union(self, other):
-		return self.cross(other, bool.__or__)
-
-
-	#Task 16
-	def intersect(self, other):
-		return self.cross(other, bool.__and__)
-
-
-	#Task 18
-	def subset(self, other):
-		'''
-			C := B intersect A^c
-			A is a subset of B iff C does not have any acceptable strings
-		'''
-		new = self.intersect(~other)
-		if new.get_accept():
-			return False
-
-		return True	
-
-	def __contains__(self, other):
-		return self.subset(other)
-
-
-	#Task 20	
-	def __eq__(self, other):
-		'''
-			if both sides are a subset of each other then they are equal
-		'''
-		return self in other and other in self
-
-	def __invert__(self):
-		'''
-			returns the complement of the DFA with a new name
-		'''
-		return DFA(self.alpha, self.Q, self.iniQ, self.trans, self.Q - self.F)
-
-
-	#Task 13
-	def compliment(d):
-		return DFA(d.alpha, d.Q, d.iniQ, d.trans, d.Q - d.F)
-
-
-
 
 
 def equalityDriver(d1, tests):
@@ -253,8 +254,8 @@ def dfaTestingDriver(d, tests):
 										#Testing for Intersect for task 17
 
 
-RepetitiveOnes_and_contains_001 = RepetitiveOnes.intersect(contains_001)
-even_length_and_only_ones = even_length.intersect(only_ones)
+RepetitiveOnes_and_contains_001 = intersect(RepetitiveOnes,contains_001)
+even_length_and_only_ones = intersect(even_length,only_ones)
 
 # Test DFA that accepts strings accepted by either RepetitiveOnes and contains_001
 test_cases = [([], False), ('0', False), ('01', False), ('11', False), ('111', False), ('110', False), ('0011', True), ('10011', True), ('00011', True), ('11001', True), ('111001', True), ('1001111', True)]
@@ -269,8 +270,8 @@ dfaTestingDriver(RepetitiveOnes_and_contains_001, test_cases)
 										#Testing for Union for task 15
 
 
-RepetitiveOnes_or_contains_001 = RepetitiveOnes.union(contains_001)
-EvenLength_OnlyOnes = even_length.union(only_ones)
+RepetitiveOnes_or_contains_001 = union(RepetitiveOnes,contains_001)
+EvenLength_OnlyOnes = union(even_length,only_ones)
 
 # Test DFA that accepts strings accepted by either RepetitiveOnes or contains_001
 test_cases = [([], False), ('0', False), ('01', False), ('11', True), ('111', True), ('110', True), ('010', False), ('0011', True), ('0001', True), ('00011', True), ('0000', False), ('01000', False)]
@@ -289,6 +290,9 @@ both DFA's
 '''
 
 # Test if RepetitiveOnes_or_contains_001 is equal to each test DFA
-test_cases = [(RepetitiveOnes_or_contains_001, True), (only_ones, False), (~RepetitiveOnes_or_contains_001, False), (~~RepetitiveOnes_or_contains_001, True)]
+test_cases = [(RepetitiveOnes_or_contains_001, True), (only_ones, False), (compliment(RepetitiveOnes_or_contains_001), False), (compliment(compliment(RepetitiveOnes_or_contains_001)), False)]
 equalityDriver(RepetitiveOnes_or_contains_001, test_cases)
+
+test_cases = [(RepetitiveOnes_and_contains_001, True), (only_ones, False), (compliment(RepetitiveOnes_and_contains_001), False), (RepetitiveOnes_and_contains_001, True)]
+equalityDriver(RepetitiveOnes_and_contains_001, test_cases)
 
