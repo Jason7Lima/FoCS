@@ -48,8 +48,16 @@ class String(list):
 
 #Data type to hold a character
 class Char():
-	def __init__(self, ch=''):
-		self.ch = ch;
+	def __init__(self, ch=None):
+		if ch:
+			self.ch = ch
+			self.empty = False
+		else:
+			self.ch = 'e'
+			self.empty = True
+
+	def isSheEmpty(self):
+		return self.empty
 
 	def __hash__(self):
 		return hash(self.ch)
@@ -137,6 +145,7 @@ class DFA():
 
 		qi = self.iniQ
 		for i in w:
+			if i.isSheEmpty():continue
 			qi = self.trans[qi][i]
 
 		return qi in self.F 
@@ -216,6 +225,7 @@ class NFA(DFA):
 		states = closure(self.iniQ)
 
 		for c in w:
+			if c.is_empty():continue
 			get_next = set()
 			for qi in states:
 				if self.trans[qi].get(c):
@@ -227,6 +237,25 @@ class NFA(DFA):
 		print(self.F)
 
 		return True if (states & self.F) else False
+
+		def oracle(self, s, trace, exp):
+			#no match
+			if s != String(''.join(str(t[0]) for t in trace)):
+				print(f'String<{s}> does no match the given trace')
+				return False
+
+			#
+			qi = self.iniQ
+			#litte search algo here for each t if it's in
+			#the transition
+			for t in trace:
+				if t[1] in self.trans[qi].get(t[0]):
+					qi = t[1]
+				else:
+					print(f'{trace} is not a valid one')
+					return False
+			#this is for testing oracle at a later task
+			return self.accepts(s) == exp
 
 
 def equalityDriver(d1, tests):
