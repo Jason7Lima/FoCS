@@ -33,11 +33,10 @@ class Alphabet(list):
 
 #This is our own string data type which will has an empty func in there and returns the string in a readable format
 class String(list):
-	def __init__(self, st, al):
+	def __init__(self, st):
 		if isinstance(st,str):
 			st = [Char(c) for c in list(st)]
 		super(String, self).__init__(st)
-		self.al = al
 
 	def empty(self):
 		if self == [Char()]:
@@ -289,6 +288,16 @@ even_length = DFA(binary,
 					  },
 					  {'q0'})
 
+nfa1 = NFA(alpha,
+			{'q1', 'q2', 'q3', 'q4'}, 'q1',
+			{
+				'q1': {Char('a'): ['q4'], Char('b'): ['q2'], 'e': ['q3']},
+				'q2': {Char('a'): ['q2', 'q3'], Char('b'): ['q3']},
+				'q3': {Char('a'): ['q1'], Char('b'): ['q4']},
+				'q4': {Char('a'): ['q4'], Char('b'): ['q4']}
+			},
+			{'q1'})
+
 def dfaFailCase(d, s, expected):
 	if d.accepts(s) != expected:
 		print(f'A test has failed')
@@ -298,7 +307,7 @@ def dfaFailCase(d, s, expected):
 def dfaTestingDriver(d, tests):
 	passed = 0 
 	for test in tests:
-		if dfaFailCase(d, String(test[0], d.alpha), test[1]):
+		if dfaFailCase(d, String(test[0]), test[1]):
 			passed += 1
 	print(f'{passed}/{len(tests)} tests PASSED')
 	return passed
@@ -351,4 +360,8 @@ equalityDriver(RepetitiveOnes_or_contains_001, test_cases)
 
 test_cases = [(RepetitiveOnes_and_contains_001, True), (only_ones, False), (compliment(RepetitiveOnes_and_contains_001), False), (RepetitiveOnes_and_contains_001, True)]
 equalityDriver(RepetitiveOnes_and_contains_001, test_cases)
+
+new_nfa = NFA.toNFA(even_length)
+
+print(nfa1.accepts(String('')))
 
