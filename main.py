@@ -316,7 +316,7 @@ even_length = DFA(binary,
 						'q1': {Char('0'): 'q0', Char('1'): 'q0'}
 					  },
 					  {'q0'})
-
+#NFA that includes an Epsilon
 nfa1 = NFA(alpha,
 			{'q1', 'q2', 'q3', 'q4'}, 'q1',
 			{
