@@ -11,11 +11,21 @@ class Alphabet(list):
 		return not len(self)
 
 	def nthString(alp, num):
-		if not num: return String([], alp)
-		layer = int(math.log(num + 1, len(alp))) 
-		index =  num + 1 - len(alp) ** layer 
+		if num == 1: return String([])
+		layer_size = 1
+		tot_size = 1
+		layer = 0
 		
-		return String(list(product(alp, repeat=layer))[index], alp)
+		while True:
+			layer_size = tot_size
+			tot_size += len(self) ** (layer + 1)
+			if num <= tot_size:
+				break
+			layer += 1
+
+		index = n - layer_size - 1
+
+		return String(list(product(self, repeat=layer+1))[index])
 
 	def __repr__(self):
 		return 'Alphabet {}'.format(', '.join(map(str, self))) 
@@ -158,21 +168,66 @@ class DFA():
 					return True
 			return False
 
-		if self.iniQ in self.F:
-			return True # return empty
+		if accept(self.qi):
+			return String(s)
 
-		accept(self.iniQ)
-		return a
+		return False
 		#Task 11
 	def trace(self, s):
 		state = []
-		if self.accepts(s):
-			qi = self.iniQ
-			for c in s:
-				state.append(qi)
-				qi = self.trans[qi][c]
-			return state
-		return False
+		qi = self.iniQ
+		for c in s:
+			state.append(qi)
+			qi = self.trans[qi][c]
+		return state
+
+
+#Task 23
+class NFA(DFA):
+	def __init__(self, alpha, Q, iniQ, trans, F):
+		self.alpha = alpha
+		self.Q = Q
+		self.iniQ = iniQ
+		self.trans = trans
+		self.F = F
+
+	def toNFA(d):
+		trans = dict()
+		for state in d.trans:
+			trans[state] = dict()
+			for c in d.trans[state]:
+				trans[state][c] = [d.trans[state][c]]
+
+		return NFA(d.alpha, d.Q, d.iniQ, trans, d.F)
+
+	def accepts(self, w):
+		def closure(qi):
+			stack = []
+			v = set()
+			stack.append(qi)
+
+			while stack:
+				state = stack.pop()
+				if state not in v:
+					v.add(state)
+					if self.trans[state].get('e'):
+						stack.extend(self.trans[state]['e'])
+
+			return v
+		states = closure(self.iniQ)
+
+		for c in w:
+			get_next = set()
+			for qi in states:
+				if self.trans[qi].get(c):
+					for nexts in self.trans[qi][c]:
+						get_next.update(closure(nexts))
+			states.update(get_next)
+
+		print(states)
+		print(self.F)
+
+		return True if (states & self.F) else False
 
 
 def equalityDriver(d1, tests):
