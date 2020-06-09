@@ -336,7 +336,18 @@ def equalityDriver(d1, tests):
 
 
 
+class tt():
+	def __init__(self):
+		self.start = 0
 
+class accep():
+		def __bool__(self): return True
+class reject():
+	def __bool__(self): return False
+class branch():
+	def __init__(self,c):
+		self.c = c
+		self.states= states
 
 
 binary = Alphabet([Char('0'), Char('1')])
