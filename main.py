@@ -278,6 +278,27 @@ class NFA():
 	def union(self, other):
 		return self.cross(other, bool.__or__)
 
+	def concat(self, other):
+		alpha = Alphabet(set(self.alpha).union(other.alpha))
+		Q = self.Q.union(set([s for s in other.Q]))
+		trans = self.trans.copy()
+		iniQ = self.iniQ
+		F = set([s for s in other.F])
+
+		newTrans = {}
+		for qi, transitions in other.trans.items():
+			new_state = qi 
+			newTrans[new_state] = dict()
+			for c, states in transitions.items():
+				newTrans[new_state][c] = [a for a in states]
+
+		trans.update(newTrans)
+
+		for qi in self.F:
+			trans[qi]['e'] = [trans[qi].get('e') or []]
+
+		return NFA(alpha, Q, iniQ, trans, F)
+
 
 def equalityDriver(d1, tests):
 	def equalityFailCase(d1, d2, expected):
@@ -440,4 +461,8 @@ print(nfa1.accepts(String('')))
 t = nfa1.union(nfa2)
 
 print(t.accepts(String('111'))) #True
+
+new = nfa2.concat(nfa1)
+
+print(new.accepts(String('0baa')))	#false
 
