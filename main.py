@@ -191,7 +191,7 @@ class DFA():
 
 
 #Task 23
-class NFA(DFA):
+class NFA():
 	def __init__(self, alpha, Q, iniQ, trans, F):
 		self.alpha = alpha
 		self.Q = Q
@@ -211,8 +211,10 @@ class NFA(DFA):
 	def accepts(self, w):
 		def closure(qi):
 			stack = []
-			v = set()
-			stack.append(qi)
+			v = set([qi])
+
+			if self.trans[qi].get('e'):
+				stack.extend(self.trans[qi]['e'])
 
 			while stack:
 				state = stack.pop()
@@ -225,37 +227,55 @@ class NFA(DFA):
 		states = closure(self.iniQ)
 
 		for c in w:
-			if c.is_empty():continue
+			if c.isSheEmpty():continue
 			get_next = set()
 			for qi in states:
 				if self.trans[qi].get(c):
 					for nexts in self.trans[qi][c]:
 						get_next.update(closure(nexts))
-			states.update(get_next)
-
-		print(states)
-		print(self.F)
+			states = get_next
 
 		return True if (states & self.F) else False
 
-		def oracle(self, s, trace, exp):
-			#no match
-			if s != String(''.join(str(t[0]) for t in trace)):
-				print(f'String<{s}> does no match the given trace')
-				return False
+	def oracle(self, s, trace, exp):
+		#no match
+		if s != String(''.join(str(t[0]) for t in trace)):
+			print(f'String<{s}> does no match the given trace')
+			return False
 
-			#
-			qi = self.iniQ
-			#litte search algo here for each t if it's in
-			#the transition
-			for t in trace:
-				if t[1] in self.trans[qi].get(t[0]):
-					qi = t[1]
-				else:
-					print(f'{trace} is not a valid one')
-					return False
-			#this is for testing oracle at a later task
-			return self.accepts(s) == exp
+		#
+		qi = self.iniQ
+		#litte search algo here for each t if it's in
+		#the transition
+		for t in trace:
+			if t[1] in self.trans[qi].get(t[0]):
+				qi = t[1]
+			else:
+				print(f'{trace} is not a valid one')
+				return False
+		#this is for testing oracle at a later task
+		return self.accepts(s) == exp
+
+	def cross(self, other, cond):
+		states = set()
+		accepts = set()
+		delta = dict()
+
+		for qi1 in self.Q:
+			for qi2 in other.Q:
+				states.add((qi1, qi2))
+				delta[(qi1, qi2)] = dict()
+				for c in self.alpha:
+					delta[(qi1, qi2)][c] = list(product(self.trans[qi1][c], other.trans[qi2][c]))
+
+		for (qi1, qi2) in states :
+			if cond(qi1 in self.F, qi2 in other.F):
+				accepts.add((qi1,qi2))
+
+		return NFA(self.alpha, states, (self.iniQ, other.iniQ), delta, accepts)
+
+	def union(self, other):
+		return self.cross(other, bool.__or__)
 
 
 def equalityDriver(d1, tests):
@@ -317,7 +337,7 @@ even_length = DFA(binary,
 					  },
 					  {'q0'})
 #NFA that includes an Epsilon
-nfa1 = NFA(alpha,
+nfa0 = NFA(alpha,
 			{'q1', 'q2', 'q3', 'q4'}, 'q1',
 			{
 				'q1': {Char('a'): ['q4'], Char('b'): ['q2'], 'e': ['q3']},
@@ -326,6 +346,28 @@ nfa1 = NFA(alpha,
 				'q4': {Char('a'): ['q4'], Char('b'): ['q4']}
 			},
 			{'q1'})
+
+nfa1 = NFA(binary,
+			{'q1', 'q2', 'q3', 'q4', 'q5'}, 'q1',
+			{
+				'q1': {Char('0'): ['q1'], Char('1'): ['q1', 'q2']},
+				'q2': {Char('0'): ['q3'], Char('1'): ['q5'], 'ε': ['q3']},
+				'q3': {Char('0'): ['q5'], Char('1'): ['q4']},
+				'q4': {Char('0'): ['q4'], Char('1'): ['q4']},
+				'q5': {Char('0'): ['q5'], Char('1'): ['q5']}
+			},
+			{'q4'})
+
+nfa2 = NFA(binary,
+			{'q1', 'q2', 'q3', 'q4', 'q5'}, 'q1',
+			{
+				'q1': {Char('0'): ['q1'], Char('1'): ['q1', 'q2']},
+				'q2': {Char('0'): ['q3'], Char('1'): ['q3']},
+				'q3': {Char('0'): ['q4'], Char('1'): ['q4']},
+				'q4': {Char('0'): ['q5'], Char('1'): ['q5']},
+				'q5': {Char('0'): ['q5'], Char('1'): ['q5']}
+			},
+			{'q4'})
 
 def dfaFailCase(d, s, expected):
 	if d.accepts(s) != expected:
@@ -393,4 +435,8 @@ equalityDriver(RepetitiveOnes_and_contains_001, test_cases)
 new_nfa = NFA.toNFA(even_length)
 
 print(nfa1.accepts(String('')))
+
+t = nfa1.union(nfa2)
+
+print(t.accepts(String('111'))) #True
 
