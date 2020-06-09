@@ -299,6 +299,26 @@ class NFA():
 
 		return NFA(alpha, Q, iniQ, trans, F)
 
+	def forking(self, d):
+		d = list(d)
+
+		def rec(qi, si):
+			if len(d) - 1 < si:
+				return 'works' if qi in self.F else 'doesnt'
+
+			r = ''
+			c = self.trnas[qi].get(d[si]) or []
+
+			if self.trans[qi].get('e'):
+				c.extend(self.trans[qi]['e'])
+
+			if c:
+				for t in c:
+					r += f'({d[si]}/{t}[{rec(t,si+1)}])'
+			return r
+
+			return f'({self.iniQ}[{rec(self.iniQ, 0)}])'
+
 
 def equalityDriver(d1, tests):
 	def equalityFailCase(d1, d2, expected):
@@ -391,6 +411,15 @@ nfa2 = NFA(binary,
 			},
 			{'q4'})
 
+nfafork = NFA(binary,
+				{'A', 'B', 'C', 'D'}, 'A',
+				{
+					'A': {Char('0'): ['A'], Char('1'): ['A', 'B']},
+					'B': {Char('0'): ['C'], Char('1'): ['C']},
+					'C': {Char('0'): ['D'], Char('1'): ['D']},
+					'D': {},
+				}, {'D'})
+
 def dfaFailCase(d, s, expected):
 	if d.accepts(s) != expected:
 		print(f'A test has failed')
@@ -465,4 +494,7 @@ print(t.accepts(String('111'))) #True
 new = nfa2.concat(nfa1)
 
 print(new.accepts(String('0baa')))	#false
+
+print(nfafork.forking(String('0101')))
+
 
