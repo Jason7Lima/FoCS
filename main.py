@@ -224,6 +224,7 @@ class NFA():
 						stack.extend(self.trans[state]['e'])
 
 			return v
+			#task 32
 		states = closure(self.iniQ)
 
 		for c in w:
