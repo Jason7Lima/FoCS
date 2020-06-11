@@ -357,7 +357,7 @@ else:
 	print('NO')
 	
 tracetree2 = '(A[(1/A[(0/A[(1/A[(0/A[(0/A[NO])])])(1/B[(0/C[(0/D[YES])])])])])(1/B[(0/C[(1/D[(0/E[(0/E[NO])])])])])])'
-tt2 = trancetree2.tt()
+tt2 = tracetree2.tt()
 if(tt2.accept == 'YES'):
 	print(tt2.accept())
 	tt2.branch()
