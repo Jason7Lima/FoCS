@@ -352,7 +352,7 @@ tracetree1 = '(A [(0/A [(1/A [(0/A [(0/A [NO])])])(1/B [(0/C [(0/D [YES])])])])]
 tt1 = tracetree1.tt()
 if(tt1.accep == 'YES'):
 	print('YES')
-	tt1.brach()
+	print(f'{tt1.branch()states} / {tt.branch().c}')
 else:
 	print('NO')
 #my trace tree is made manually from my NFA in the correct formatting the tt class will confirm and build
@@ -360,7 +360,7 @@ tracetree2 = '(A[(1/A[(0/A[(1/A[(0/A[(0/A[NO])])])(1/B[(0/C[(0/D[YES])])])])])(1
 tt2 = tracetree2.tt()
 if(tt2.accep == 'YES'):
 	print(tt2.accept())
-	tt2.branch()
+	print(f'{tt2.bracnh().states} / {tt2.branch().c}')
 	
 else:
 	print('NO')
@@ -368,7 +368,7 @@ tracetree3 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
 tt3 = tracetree3.tt()
 if (tt3.accep == 'YES):
     print 'YES'
-    tt3.branch()
+    print(f'{tt3.branch()states} / {tt3.branch().c}')
 else:
     print('NO')
 tracetree4 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
@@ -376,7 +376,7 @@ tracetree4 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
 tt4 = tracetree4.tt()
 if (tt4.accep == 'YES')
     print('YES')
-    tt4.brach()
+    print(f'{tt4.branch()states} / {tt4.branch().c}')
 else:
     print('NO')
 
