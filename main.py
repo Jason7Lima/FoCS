@@ -355,10 +355,10 @@ if(tt1.accep == 'YES'):
 	tt1.brach()
 else:
 	print('NO')
-	
+#my trace tree is made manually from my NFA in the correct formatting the tt class will confirm and build
 tracetree2 = '(A[(1/A[(0/A[(1/A[(0/A[(0/A[NO])])])(1/B[(0/C[(0/D[YES])])])])])(1/B[(0/C[(1/D[(0/E[(0/E[NO])])])])])])'
 tt2 = tracetree2.tt()
-if(tt2.accept == 'YES'):
+if(tt2.accep == 'YES'):
 	print(tt2.accept())
 	tt2.branch()
 	
@@ -366,14 +366,15 @@ else:
 	print('NO')
 tracetree3 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
 tt3 = tracetree3.tt()
-if (tt3.accept == 'YES):
+if (tt3.accep == 'YES):
     print 'YES'
     tt3.branch()
 else:
     print('NO')
 tracetree4 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
-tt4 = trancetree4.tt()
-if (tt4.accpt == 'YES')
+    #This is testing make sure this works I used my original tt data-type as sort of a testing
+tt4 = tracetree4.tt()
+if (tt4.accep == 'YES')
     print('YES')
     tt4.brach()
 else:
