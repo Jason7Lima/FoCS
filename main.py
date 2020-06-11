@@ -341,13 +341,43 @@ class tt():
 		self.start = 0
 
 class accep():
-		def __bool__(self): return True
-class reject():
-	def __bool__(self): return False
+		def __bool__(self): return 'YES'
 class branch():
 	def __init__(self,c):
 		self.c = c
 		self.states= states
+		
+
+tracetree1 = '(A [(0/A [(1/A [(0/A [(0/A [NO])])])(1/B [(0/C [(0/D [YES])])])])])'
+tt1 = tracetree1.tt()
+if(tt1.accep == 'YES'):
+	print('YES')
+	tt1.brach()
+else:
+	print('NO')
+	
+tracetree2 = '(A[(1/A[(0/A[(1/A[(0/A[(0/A[NO])])])(1/B[(0/C[(0/D[YES])])])])])(1/B[(0/C[(1/D[(0/E[(0/E[NO])])])])])])'
+tt2 = trancetree2.tt()
+if(tt2.accept == 'YES'):
+	print(tt2.accept())
+	tt2.branch()
+	
+else:
+	print('NO')
+tracetree3 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
+tt3 = tracetree3.tt()
+if (tt3.accept == 'YES):
+    print 'YES'
+    tt3.branch()
+else:
+    print('NO')
+tracetree4 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
+tt4 = trancetree4.tt()
+if (tt4.accpt == 'YES')
+    print('YES')
+    tt4.brach()
+else:
+    print('NO')
 
 
 binary = Alphabet([Char('0'), Char('1')])
