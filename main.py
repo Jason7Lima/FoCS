@@ -299,6 +299,21 @@ class NFA():
 
 		return NFA(alpha, Q, iniQ, trans, F)
 
+	def kleene(self):
+		alpha = self.alpha
+		Q = self.Q.copy()
+		trnas = self.trans.copy()
+		iniQ = 'k0'
+		F = {'k0'}
+
+		Q.add('k0')
+		trans['k0'] = {'e': list(F.union({self.iniQ}))}
+
+		for qi in self.F:
+			trans[qi]['e'] = ['k0'] + (trans[qi].get('e') or [])
+
+		return NFA(alpha, Q, iniQ, trans, F)
+
 	def forking(self, d):
 		d = list(d)
 
@@ -336,49 +351,49 @@ def equalityDriver(d1, tests):
 
 
 
-class tt():
-	def __init__(self):
-		self.start = 0
+# class tt():
+# 	def __init__(self):
+# 		self.start = 0
 
-class accep():
-		def __bool__(self): return 'YES'
-class branch():
-	def __init__(self,c):
-		self.c = c
-		self.states= states
+# class accep():
+# 		def __bool__(self): return 'YES'
+# class branch():
+# 	def __init__(self,c):
+# 		self.c = c
+# 		self.states= states
 		
 
-tracetree1 = '(A [(0/A [(1/A [(0/A [(0/A [NO])])])(1/B [(0/C [(0/D [YES])])])])])'
-tt1 = tracetree1.tt()
-if(tt1.accep == 'YES'):
-	print('YES')
-	print(f'{tt1.branch()states} / {tt.branch().c}')
-else:
-	print('NO')
-#my trace tree is made manually from my NFA in the correct formatting the tt class will confirm and build
-tracetree2 = '(A[(1/A[(0/A[(1/A[(0/A[(0/A[NO])])])(1/B[(0/C[(0/D[YES])])])])])(1/B[(0/C[(1/D[(0/E[(0/E[NO])])])])])])'
-tt2 = tracetree2.tt()
-if(tt2.accep == 'YES'):
-	print(tt2.accept())
-	print(f'{tt2.bracnh().states} / {tt2.branch().c}')
+# tracetree1 = '(A [(0/A [(1/A [(0/A [(0/A [NO])])])(1/B [(0/C [(0/D [YES])])])])])'
+# tt1 = tracetree1.tt()
+# if(tt1.accep == 'YES'):
+# 	print('YES')
+# 	print(f'{tt1.branch()states} / {tt.branch().c}')
+# else:
+# 	print('NO')
+# #my trace tree is made manually from my NFA in the correct formatting the tt class will confirm and build
+# tracetree2 = '(A[(1/A[(0/A[(1/A[(0/A[(0/A[NO])])])(1/B[(0/C[(0/D[YES])])])])])(1/B[(0/C[(1/D[(0/E[(0/E[NO])])])])])])'
+# tt2 = tracetree2.tt()
+# if(tt2.accep == 'YES'):
+# 	print(tt2.accept())
+# 	print(f'{tt2.bracnh().states} / {tt2.branch().c}')
 	
-else:
-	print('NO')
-tracetree3 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
-tt3 = tracetree3.tt()
-if (tt3.accep == 'YES):
-    print 'YES'
-    print(f'{tt3.branch()states} / {tt3.branch().c}')
-else:
-    print('NO')
-tracetree4 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
-    #This is testing make sure this works I used my original tt data-type as sort of a testing
-tt4 = tracetree4.tt()
-if (tt4.accep == 'YES')
-    print('YES')
-    print(f'{tt4.branch()states} / {tt4.branch().c}')
-else:
-    print('NO')
+# else:
+# 	print('NO')
+# tracetree3 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
+# tt3 = tracetree3.tt()
+# if (tt3.accep == 'YES):
+#     print 'YES'
+#     print(f'{tt3.branch()states} / {tt3.branch().c}')
+# else:
+#     print('NO')
+# tracetree4 = '(A[(0/A[(0/A[(0/A[(0/A[NO])])])])])'
+#     #This is testing make sure this works I used my original tt data-type as sort of a testing
+# tt4 = tracetree4.tt()
+# if (tt4.accep == 'YES')
+#     print('YES')
+#     print(f'{tt4.branch()states} / {tt4.branch().c}')
+# else:
+#     print('NO')
 
 
 binary = Alphabet([Char('0'), Char('1')])
